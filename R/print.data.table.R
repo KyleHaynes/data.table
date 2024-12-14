@@ -227,7 +227,7 @@ format_list_item.default = function(x, ...) {
     # format_list_item would not be reached) but this particular list item does have a format method so use it
     formatted
   } else {
-    paste0("<", class1(x), paste_dims(x), ">")
+    paste0("X", class1(x), paste_dims(x), "X")
   }
 }
 
