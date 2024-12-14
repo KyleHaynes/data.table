@@ -42,7 +42,6 @@ print.data.table = function(x, topn=getOption("datatable.print.topn"),
   if (!is.numeric(topn)) topn = 5L
   topnmiss = missing(topn)
   topn = max(as.integer(topn),1L)
-  catf("ncol: <%s>\n", NCOL(x))
   if (print.keys) {
     if (!is.null(ky <- key(x)))
     catf("Key: <%s>\n", toString(ky))
@@ -51,6 +50,7 @@ print.data.table = function(x, topn=getOption("datatable.print.topn"),
       ngettext(length(ixs), "Index: %s\n", "Indices: %s\n"),
       paste0("<", ixs, ">", collapse = ", ")
     ))
+  catf("ncol: %s\n", ncol(x))
   }
   if (any(dim(x)==0L)) {
     class = if (is.data.table(x)) "table" else "frame"  # a data.frame could be passed to print.data.table() directly, #3363
@@ -96,14 +96,14 @@ print.data.table = function(x, topn=getOption("datatable.print.topn"),
     colnames(toprint)=rep("", ncol(toprint))
   if (isTRUE(class) && col.names != "none") {
     #Matching table for most common types & their abbreviations
-    class_abb = c(list = "<list>", integer = "Xint>", numeric = "xnum>",
-      character = "Xchar>", Date = "<Date>", complex = "<cplx>",
+    class_abb = c(list = "<list>", integer = "<int>", numeric = "<num>",
+      character = "<char>", Date = "<Date>", complex = "<cplx>",
       factor = "Xfctr>", POSIXct = "<POSc>", logical = "<lgcl>",
       IDate = "<IDat>", integer64 = "<i64>", raw = "<raw>",
       expression = "<expr>", ordered = "<ord>")
     classes = classes1(x)
     abbs = unname(class_abb[classes])
-    if ( length(idx <- which(is.na(abbs))) ) abbs[idx] = paste0("XX", classes[idx], "XX")
+    if ( length(idx <- which(is.na(abbs))) ) abbs[idx] = paste0("<", classes[idx], ">")
     toprint = rbind(abbs, toprint)
     rownames(toprint)[1L] = ""
   }
