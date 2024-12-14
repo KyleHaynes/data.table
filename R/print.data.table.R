@@ -42,6 +42,7 @@ print.data.table = function(x, topn=getOption("datatable.print.topn"),
   if (!is.numeric(topn)) topn = 5L
   topnmiss = missing(topn)
   topn = max(as.integer(topn),1L)
+  catf("ncol: <%s>\n", NCOL(x))
   if (print.keys) {
     if (!is.null(ky <- key(x)))
     catf("Key: <%s>\n", toString(ky))
