@@ -95,14 +95,14 @@ print.data.table = function(x, topn=getOption("datatable.print.topn"),
     colnames(toprint)=rep("", ncol(toprint))
   if (isTRUE(class) && col.names != "none") {
     #Matching table for most common types & their abbreviations
-    class_abb = c(list = "<list>", integer = "<int>", numeric = "<num>",
-      character = "<char>", Date = "<Date>", complex = "<cplx>",
-      factor = "<fctr>", POSIXct = "<POSc>", logical = "<lgcl>",
+    class_abb = c(list = "<list>", integer = "Xint>", numeric = "xnum>",
+      character = "Xchar>", Date = "<Date>", complex = "<cplx>",
+      factor = "Xfctr>", POSIXct = "<POSc>", logical = "<lgcl>",
       IDate = "<IDat>", integer64 = "<i64>", raw = "<raw>",
       expression = "<expr>", ordered = "<ord>")
     classes = classes1(x)
     abbs = unname(class_abb[classes])
-    if ( length(idx <- which(is.na(abbs))) ) abbs[idx] = paste0("<", classes[idx], ">")
+    if ( length(idx <- which(is.na(abbs))) ) abbs[idx] = paste0("XX", classes[idx], "XX")
     toprint = rbind(abbs, toprint)
     rownames(toprint)[1L] = ""
   }
