@@ -8,6 +8,7 @@ print.data.table = function(x, topn=getOption("datatable.print.topn"),
                print.keys=getOption("datatable.print.keys"),
                trunc.cols=getOption("datatable.print.trunc.cols"),
                show.indices=getOption("datatable.show.indices"),
+               show.ncols=getOption("datatable.show.ncols"),
                quote=FALSE,
                na.print=NULL,
                timezone=FALSE, ...) {
@@ -50,7 +51,9 @@ print.data.table = function(x, topn=getOption("datatable.print.topn"),
       ngettext(length(ixs), "Index: %s\n", "Indices: %s\n"),
       paste0("<", ixs, ">", collapse = ", ")
     ))
-  catf("ncol: %s\n", ncol(x))
+  }
+  if (show.ncols && !any(dim(x)==0L)) {
+      catf("Number of columns: %s\n", ncol(x))
   }
   if (any(dim(x)==0L)) {
     class = if (is.data.table(x)) "table" else "frame"  # a data.frame could be passed to print.data.table() directly, #3363
