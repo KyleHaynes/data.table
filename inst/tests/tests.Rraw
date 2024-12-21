@@ -20697,3 +20697,8 @@ if (test_bit64) {
   test(2300.3, DT1[DT2, on='id'], error="Incompatible join types")
   test(2300.4, DT2[DT1, on='id'], error="Incompatible join types")
 }
+
+# #6663: printing column numbers
+test(2301.01, capture.output(print(data.table())),      output = "Null data.table (0 rows and 0 cols)")
+test(2301.02, capture.output(print(data.table(a=1, b=2, c=3)))[1],      output = c("Number of columns: 3"))
+test(2301.03, capture.output(print(data.table(a=1, b=2, c=3), show.ncols=FALSE)[1]),      output = "       a")
