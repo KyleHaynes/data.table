@@ -52,8 +52,8 @@ print.data.table = function(x, topn=getOption("datatable.print.topn"),
       paste0("<", ixs, ">", collapse = ", ")
     ))
   }
-  if (show.ncols && !any(dim(x)==0L)) {
-      catf("Number of columns: %s\n", ncol(x))
+  if (show.ncols && !any(dim(x)==0L) && !trunc.cols) {
+    catf("Number of columns: %s\n", ncol(x))
   }
   if (any(dim(x)==0L)) {
     class = if (is.data.table(x)) "table" else "frame"  # a data.frame could be passed to print.data.table() directly, #3363
@@ -106,12 +106,13 @@ print.data.table = function(x, topn=getOption("datatable.print.topn"),
       expression = "<expr>", ordered = "<ord>")
     classes = classes1(x)
     abbs = unname(class_abb[classes])
-    if ( length(idx <- which(is.na(abbs))) ) abbs[idx] = paste0("<", classes[idx], "")
+    if ( length(idx <- which(is.na(abbs))) ) abbs[idx] = paste0("<", classes[idx], ">")
     toprint = rbind(abbs, toprint)
     rownames(toprint)[1L] = ""
   }
   if (isFALSE(class) || (isTRUE(class) && col.names == "none")) abbs = ""
   if (quote) colnames(toprint) <- paste0('"', old <- colnames(toprint), '"')
+  
   if (isTRUE(trunc.cols)) {
     # allow truncation of columns to print only what will fit in console PR #4074
     widths = dt_width(toprint, n_x, class, row.names, col.names)
@@ -129,9 +130,9 @@ print.data.table = function(x, topn=getOption("datatable.print.topn"),
   }
   print_default = function(x) {
     if (col.names != "none") cut_colnames = identity
+    if (trunc.cols) trunc_cols_message(not_printed, abbs, class, col.names)
     cut_colnames(print(x, right=TRUE, quote=quote, na.print=na.print))
     # prints names of variables not shown in the print
-    if (trunc.cols) trunc_cols_message(not_printed, abbs, class, col.names)
   }
   if (printdots) {
     if (isFALSE(row.names)) {
@@ -231,7 +232,7 @@ format_list_item.default = function(x, ...) {
     # format_list_item would not be reached) but this particular list item does have a format method so use it
     formatted
   } else {
-    paste0("X", class1(x), paste_dims(x), "X")
+    paste0("<", class1(x), paste_dims(x), ">")
   }
 }
 
@@ -284,10 +285,11 @@ toprint_subset = function(x, cols_to_print) {
 # message for when trunc.cols=TRUE and some columns are not printed
 trunc_cols_message = function(not_printed, abbs, class, col.names){
   n = length(not_printed)
+  nc = length(abbs)
   if (class && col.names != "none") classes = paste0(" ", tail(abbs, n)) else classes = ""
   catf(
-    ngettext(n, "%d variable not shown: %s\n", "%d variables not shown: %s\n"),
-    n, brackify(paste0(not_printed, classes)),
+    "Number of columns: %d, of which %d are not shown: %s\n",
+    nc, n,  brackify(paste0(not_printed, classes)),
     domain=NA
   )
 }
