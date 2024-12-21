@@ -129,9 +129,9 @@ print.data.table = function(x, topn=getOption("datatable.print.topn"),
   }
   print_default = function(x) {
     if (col.names != "none") cut_colnames = identity
+    # prints names of variables not shown in the print
     if (trunc.cols) trunc_cols_message(not_printed, abbs, class, col.names)
     cut_colnames(print(x, right=TRUE, quote=quote, na.print=na.print))
-    # prints names of variables not shown in the print
   }
   if (printdots) {
     if (isFALSE(row.names)) {
